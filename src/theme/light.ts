@@ -184,6 +184,17 @@ export const Light: TC<LightOptions> = (options) => {
       selected: {},
       disabled: {},
     },
+    axis: {
+      titleFill: 'black',
+      titleFillOpacity: 1,
+      titleFontWeight: 'bold',
+      axisLineStroke: '#BFBFBF',
+      gridLineStroke: '#1B1E23',
+      gridLineStrokeOpacity: 0.05,
+      gridLineLineDash: [0, 0],
+      tickLineLineWidth: 1,
+      tickLineStroke: '#BFBFBF',
+    },
   };
   return Object.assign({}, defaultOptions, options);
 };

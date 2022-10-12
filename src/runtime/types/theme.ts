@@ -17,6 +17,26 @@ type ElementStyle = {
   r?: number;
 };
 
+type FontStyle<T extends string> = {
+  [key in
+    | `${T}Fill`
+    | `${T}Stroke`
+    | `${T}TextAlign`
+    | `${T}Baseline`]?: string;
+} & {
+  [key in `${T}FillOpacity` | `${T}Dx` | `${T}Dy`]?: number;
+} & {
+  [key in `${T}FontWeight`]?: string | number;
+};
+
+type LineStyle<T extends string> = {
+  [key in `${T}Fill` | `${T}Stroke`]?: string;
+} & {
+  [key in `${T}LineWidth` | `${T}StrokeOpacity`]?: number;
+} & {
+  [key in `${T}LineDash`]?: number | number[];
+};
+
 type MarkTheme = NestUnion<'interval', ['rect', 'hollowRect'], ElementStyle> &
   NestUnion<'rect', ['rect', 'hollowRect'], ElementStyle> &
   NestUnion<'line', ['line'], ElementStyle> &
@@ -73,6 +93,11 @@ type ComponentTheme = {
     fontWeight?: string;
     spacing?: number;
   };
+  axis?: FontStyle<'title'> &
+    FontStyle<'label'> &
+    LineStyle<'axisLine'> &
+    LineStyle<'tickLine'> &
+    LineStyle<'gridLine'>;
 };
 
 type AnimationTheme = {

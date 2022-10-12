@@ -443,6 +443,7 @@ const LinearAxis: GCC<AxisOptions> = (options) => {
       ? getGridItems(ticks, position, coordinate, startPos, endPos)
       : [];
 
+    const { axis: axisTheme } = theme;
     const axisLineStyle = subObject(rest, 'line');
     return new Linear({
       style: deepMix(
@@ -457,6 +458,7 @@ const LinearAxis: GCC<AxisOptions> = (options) => {
                 autoHide: false,
                 autoRotate: true,
                 style: {
+                  ...subObject(axisTheme, 'label'),
                   ...(labelAlign && { textAlign: labelAlign }),
                   ...subObject(rest, 'label'),
                 },
@@ -464,15 +466,16 @@ const LinearAxis: GCC<AxisOptions> = (options) => {
             : null,
           axisLine:
             axisLine || Object.keys(axisLineStyle).length
-              ? { stroke: '#BFBFBF', style: axisLineStyle }
+              ? {
+                  style: {
+                    ...subObject(axisTheme, 'axisLine'),
+                    ...axisLineStyle,
+                  },
+                }
               : null,
           grid: {
             items: gridItems,
-            lineStyle: {
-              stroke: '#1b1e23',
-              strokeOpacity: 0.05,
-              lineDash: [0, 0],
-            },
+            lineStyle: subObject(axisTheme, 'gridLine'),
             ...(position === 'arcY' && {
               type: 'circle',
               center: [bbox.x, cy + bbox.y],
@@ -483,8 +486,7 @@ const LinearAxis: GCC<AxisOptions> = (options) => {
             ? {
                 len: 4,
                 style: {
-                  lineWidth: 1,
-                  stroke: '#BFBFBF',
+                  ...subObject(axisTheme, 'tickLine'),
                   ...subObject(rest, 'tick'),
                 },
               }
@@ -494,8 +496,7 @@ const LinearAxis: GCC<AxisOptions> = (options) => {
               content: titleContent(title),
               titleAnchor: anchor,
               style: {
-                fontWeight: 'bold',
-                fillOpacity: 1,
+                ...subObject(axisTheme, 'title'),
                 dy: titleOffsetY,
                 textAnchor: anchor,
                 ...subObject(rest, 'title'),
