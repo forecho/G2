@@ -299,7 +299,7 @@ describe('Chart', () => {
   it('chart.render({...}) should rerender chart with updated data', () => {
     const div = createDiv();
     const button = document.createElement('button');
-    button.innerText = 'Update';
+    button.innerText = 'Update Data';
     div.appendChild(button);
 
     const chart = new Chart({
@@ -321,16 +321,86 @@ describe('Chart', () => {
       .encode('color', 'genre');
 
     chart.render();
-
     button.onclick = () => {
-      chart.data([
+      chart.changeData([
         { genre: 'Action', sold: 120 },
         { genre: 'Shooter', sold: 350 },
         { genre: 'Other', sold: 150 },
         { genre: 'Sports', sold: 275 },
         { genre: 'Strategy', sold: 115 },
       ]);
-      chart.render();
     };
   });
+});
+
+it('chart.render({...}) should rerender chart with updated size', () => {
+  const div = createDiv();
+  const button = document.createElement('button');
+  button.innerText = 'Update Size';
+  div.appendChild(button);
+
+  const chart = new Chart({
+    container: div,
+  });
+
+  chart.data([
+    { genre: 'Sports', sold: 275 },
+    { genre: 'Strategy', sold: 115 },
+    { genre: 'Action', sold: 120 },
+    { genre: 'Shooter', sold: 350 },
+    { genre: 'Other', sold: 150 },
+  ]);
+
+  chart
+    .interval()
+    .encode('x', 'genre')
+    .encode('y', 'sold')
+    .encode('color', 'genre');
+
+  chart.render();
+  button.onclick = () => {
+    chart.changeSize(200, 400);
+  };
+});
+
+it('chart.render({...}) should render with autoFit.', () => {
+  const div = createDiv();
+
+  // button
+  const button = document.createElement('button');
+  button.innerText = 'Change Wrapper Container';
+  div.appendChild(button);
+
+  // wrapperDiv
+  const wrapperDiv = document.createElement('div');
+  wrapperDiv.style.width = '800px';
+  wrapperDiv.style.height = '500px';
+  div.appendChild(wrapperDiv);
+
+  const chart = new Chart({
+    container: wrapperDiv,
+    autoFit: true,
+  });
+
+  chart.data([
+    { genre: 'Sports', sold: 275 },
+    { genre: 'Strategy', sold: 115 },
+    { genre: 'Action', sold: 120 },
+    { genre: 'Shooter', sold: 350 },
+    { genre: 'Other', sold: 150 },
+  ]);
+
+  chart
+    .interval()
+    .encode('x', 'genre')
+    .encode('y', 'sold')
+    .encode('color', 'genre');
+
+  chart.render();
+
+  button.onclick = () => {
+    wrapperDiv.style.width = '400px';
+    wrapperDiv.style.height = '500px';
+    chart.forceFit();
+  };
 });

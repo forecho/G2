@@ -68,11 +68,15 @@ export function render<T extends G2ViewTree = G2ViewTree>(
   context.canvas = canvas;
   context.library = library;
 
+  const { width: _width, height: _height } = canvas.getConfig();
+
   // Plot the chart and mutate context.
   // Make sure that plot chart after container is ready for every time.
   const selection = select(canvas.document.documentElement);
   canvas.ready
-    .then(() => plot<T>({ ...keyed, width, height }, selection, library))
+    .then(() =>
+      plot<T>({ ...keyed, width: _width, height: _height }, selection, library),
+    )
     .then(callback);
 
   // Return the container HTML element wraps the canvas or svg element.

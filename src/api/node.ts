@@ -1,5 +1,3 @@
-import { clone } from '@antv/util';
-
 /**
  * Hierarchy container.
  */
@@ -22,6 +20,8 @@ export class Node<
 
   // The type of the node.
   type: string;
+
+  destroyed = false;
 
   constructor(value: Partial<Value> = {}, type?: string) {
     this.type = type;
@@ -65,6 +65,58 @@ export class Node<
     return node;
   }
 
+  remove(targetNode: Node): Node {
+    const discovered: Node[] = [this];
+
+    while (discovered.length) {
+      const node = discovered.pop();
+      const children = node.value?.children || node.children;
+      for (let i = 0; i < children.length; i++) {
+        if (children[i] === targetNode) {
+          children.splice(i, 1);
+          return targetNode;
+        } else {
+          discovered.push(children[i]);
+        }
+      }
+    }
+
+    return targetNode;
+  }
+
+  getNodeByKey(key: string): Node {
+    const discovered: Node[] = [this];
+
+    while (discovered.length) {
+      const node = discovered.pop();
+      if (key === node['key']) {
+        return node;
+      }
+      const children = node.value?.children || node.children || [];
+      for (const child of children) {
+        discovered.push(child);
+      }
+    }
+    return null;
+  }
+
+  getNodesByType(type: string): Node[] {
+    const nodes = [];
+    const discovered: Node[] = [this];
+
+    while (discovered.length) {
+      const node = discovered.pop();
+      if (type === node.type) {
+        nodes.push(node);
+      }
+      const children = node.value?.children || node.children;
+      for (const child of children) {
+        discovered.push(child);
+      }
+    }
+    return nodes;
+  }
+
   /**
    * Apply specified callback to the node value.
    */
@@ -75,4 +127,19 @@ export class Node<
     callback(this.map(), ...params);
     return this;
   }
+
+  destroy() {
+    this.off();
+    this.destroyed = true;
+  }
+
+  on(evt: string, callback: (...args: any[]) => void) {
+    // TODO
+  }
+
+  emit(evt: string, ...args: any[]) {
+    // TODO
+  }
+
+  off(evt?: string) {}
 }
